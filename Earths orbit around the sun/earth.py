@@ -35,6 +35,14 @@ def euler_method(r, v, accn, dt):
     for i in range(1, len(t)):
         r[i] = r[i-1]+ v[i-1]*dt
         v[i] = v[i-1] + accn(r[i-1]) *dt
-        
+
+# apply the euler integration on the given conditions
 euler_method(r, v, accn, dt)
-print(r)        
+
+#find the point at which the earth is at its aphelion 
+sizes= np.array([np.linalg.norm(position)for position in r])
+position_aphelion = np.max(sizes)
+arg_aphelion =np.argmax(sizes)
+velocity_aphelion = np.linalg.norm(v[arg_aphelion])
+
+print(position_aphelion/1e9, velocity_aphelion/1e3)
