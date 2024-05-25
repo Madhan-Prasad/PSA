@@ -29,4 +29,12 @@ r[0], v[0] =r_0 , v_0
 def accn(r):
     return (-G*M_sun / np.linalg.norm(r)**3 ) *r
 
-print (accn(r_0))
+# Euler integrrration 
+def euler_method(r, v, accn, dt):
+    
+    for i in range(1, len(t)):
+        r[i] = r[i-1]+ v[i-1]*dt
+        v[i] = v[i-1] + accn(r[i-1]) *dt
+        
+euler_method(r, v, accn, dt)
+print(r)        
