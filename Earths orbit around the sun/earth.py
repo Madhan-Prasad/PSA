@@ -13,6 +13,7 @@ v_0 = np.array([0, -30.29e3])
 # time step and total time for simulation 
 dt = 3600 
 t_max = 3.154e7
+method_integration = 'euler'
 
 # time array to be used in the numerical solution  
 t = np.arange(0, t_max, dt)
@@ -57,7 +58,7 @@ def rk4_method (r, v, accn, dt):
     
     
 # applicatio of numerical integration based on the chosen method 
-def numerical_integration (r, v, accn, dt, method= 'euler'):
+def numerical_integration (r, v, accn, dt, method ):
     if method == 'euler':
         euler_method (r, v, accn, dt)
     elif method == 'rk4':
@@ -65,10 +66,28 @@ def numerical_integration (r, v, accn, dt, method= 'euler'):
     else:
      raise Exception(f'You can either choose "euler" or "rk4". Your current input method is:- {method}')    
 
-numerical_integration (r, v, accn, dt, method= "rk4")   
+numerical_integration (r, v, accn, dt, method= method_integration )   
 
 sizes= np.array([np.linalg.norm(position)for position in r])
 position_aphelion = np.max(sizes)
 arg_aphelion =np.argmax(sizes)
 velocity_aphelion = np.linalg.norm(v[arg_aphelion])
-print(position_aphelion/1e9, velocity_aphelion/1e3)
+
+# plotting the simulated ata on the 3d axes 
+plt.style.use('dark_background')
+plt.figure(figsize=(7,12))
+plt.subplot(projection='3d')
+suptitle_str = "RK4" if method_integration == 'rk4' else "Euler"
+plt.suptitle(suptitle_str + ' Method', color='r', fontsize=18, weight='bold')
+plt.title(f'At Aphelion, the Earth is {round(position_aphelion/1e9,1)}Million Kilometer away from the Sun \n Moving at the speed of {round(velocity_aphelion/1e3,1)}Km/s.', fontsize=14, color='orange')
+plt.plot(r[:,0],r[:,1], color= 'tab:purple', lw=2, label='Orbit')
+plt.scatter(0,0, color='yellow', s=1000, label='sun')
+plt.scatter(r[0,0],r[0,1],s=200, label='Earth at its perihelion')
+plt.scatter(r[arg_aphelion,0],r[arg_aphelion,1],s=200, label='Earth at its aphelion',color= 'blue')
+legend = plt.legend(loc='lower right', frameon= False)
+legend.legend_handles[1]._sizes =[150]
+legend.legend_handles[2]._sizes =[80]
+legend.legend_handles[3]._sizes =[80]
+plt.axis('off')
+plt.show( )
+
