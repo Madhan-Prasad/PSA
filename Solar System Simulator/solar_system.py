@@ -68,20 +68,21 @@ def gravitational_force( self , ss_body):
     y_diff = ss_body.y - self.y
     distance = math.sqrt(x_diff**2 + y_diff**2)
     g_force = self.G * self.mass * ss_body.mass / distance**2
-    thetha = math.atan2(y_diff/x_diff)
+    thetha = math.atan2(y_diff,x_diff)
     f_x = g_force * math.cos(thetha)
     f_y = g_force * math.sin(thetha)
     return f_x, f_y
     
     
 # method 3 to update the positions of the bodies
-def update_position(self, ss_bodies):
+
+def update_position (self, ss_bodies):
     net_fx, net_fy = 0,0 
     for ss_body in ss_bodies:
-        if self != ss_body:
-            f_x , f_y = self.gravitational_force(ss_body)
-            net_fx += f_x
-            net_fy += f_y
+       if self != ss_body:
+           f_x , f_y = self.gravitational_force(ss_body)
+           net_fx += f_x
+           net_fy += f_y
     self.x_vel += net_fx/ self.mass * self.TIME_STEP  
     self.y_vel += net_fy/ self.mass * self.TIME_STEP  
     self.x += self.x_vel * self.TIME_STEP
@@ -92,9 +93,13 @@ def update_position(self, ss_bodies):
 
 sun= SolarSystemBodies("Sun", YELLOW, 0, 0, 1.989e30, 30 )
 mercury= SolarSystemBodies("Mercury", GREY, 0.39*SolarSystemBodies.AU, 0, 0.33e24, 6)
+mercury.y_vel = -47.4e3
 venus= SolarSystemBodies("venus", YELLOWISH_WHITE, 0.72*SolarSystemBodies.AU, 0, 4.87e24, 14)
+venus.y_vel = -35e3
 earth= SolarSystemBodies("earth", BLUE, 1*SolarSystemBodies.AU, 0, 5.97e24, 15)
+earth.y_vel = -29.8e3
 mars= SolarSystemBodies("Mars", RED, 1.52*SolarSystemBodies.AU, 0, 0.642e24, 8)
+mars.y_vel = -24.1e3
 run=True
 while run:
     
@@ -104,7 +109,12 @@ while run:
         if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
          run = False    
     ss_bodies=[sun,mercury, venus, earth, mars]
+    ss_bodies=[sun,mercury, venus, earth, mars]
+    
+    ss_bodies=[sun,mercury, venus, earth, mars] 
+    
     for body in ss_bodies:
+        body.update_position(ss_bodies)
         body.draw_body(WINDOW)
     pg.display.update()     
          
