@@ -41,6 +41,7 @@ class SolarSystemBodies :
     
     AU=1.496e11
     SCALE = 285/AU
+    G= 6.6743e-11
     
     #constructor
     def __init__(self, name, color, x, y, mass, radius ):
@@ -57,6 +58,18 @@ class SolarSystemBodies :
             y= self.y*SolarSystemBodies.SCALE + HEIGHT//2
             pg.draw.circle(surface=WINDOW, color= self.color, center=(x,y), radius=self.radius)
 
+# method 2 - to calculate the gravitational force 
+def gravitational_force( self , ss_body):
+    
+    x_diff= ss_body.x - self.x
+    y_diff = ss_body.y - self.y
+    distance = math.sqrt(x_diff**2 + y_diff**2)
+    g_force = self.G * self.mass * ss_body.mass / distance**2
+    thetha = math.atan2(y_diff/x_diff)
+    f_x = g_force * math.cos(thetha)
+    f_y = g_force * math.sin(thetha)
+    return f_x, f_y
+    
 # Create simulation 
 
 sun= SolarSystemBodies("Sun", YELLOW, 0, 0, 1.989e30, 30 )
