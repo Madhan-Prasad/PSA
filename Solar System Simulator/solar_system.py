@@ -42,7 +42,7 @@ class SolarSystemBodies :
     AU=1.496e11
     SCALE = 285/AU
     G= 6.6743e-11
-    
+    TIME_STEP= 24*3600
     #constructor
     def __init__(self, name, color, x, y, mass, radius ):
         self.name= name
@@ -51,6 +51,9 @@ class SolarSystemBodies :
         self.y=y
         self.mass= mass
         self.radius= radius
+        self.x_vel = 0
+        self.y_vel = 0
+        self.orbit = []
         
         # method 1 -draw the bodies on the simulator 
     def draw_body(self, WINDOW):
@@ -70,6 +73,21 @@ def gravitational_force( self , ss_body):
     f_y = g_force * math.sin(thetha)
     return f_x, f_y
     
+    
+# method 3 to update the positions of the bodies
+def update_position(self, ss_bodies):
+    net_fx, net_fy = 0,0 
+    for ss_body in ss_bodies:
+        if self != ss_body:
+            f_x , f_y = self.gravitational_force(ss_body)
+            net_fx += f_x
+            net_fy += f_y
+    self.x_vel += net_fx/ self.mass * self.TIME_STEP  
+    self.y_vel += net_fy/ self.mass * self.TIME_STEP  
+    self.x += self.x_vel * self.TIME_STEP
+    self.y += self.y_vel * self. TIME_STEP
+    self.orbit.append ((self.x, self.y))  
+   
 # Create simulation 
 
 sun= SolarSystemBodies("Sun", YELLOW, 0, 0, 1.989e30, 30 )
