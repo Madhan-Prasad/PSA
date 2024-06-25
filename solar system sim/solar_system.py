@@ -26,7 +26,9 @@ class SolarSystemBodies :
     
     AU = 1.496e11
     SCALE = 280/AU
-    
+    G= 6.6743e-11
+    TIME_STEP = 24*3600
+      
     #constructor
     def __init__(self, name, color, x, y, mass, radius):
         self.name = name
@@ -35,6 +37,9 @@ class SolarSystemBodies :
         self.y = y
         self.mass = mass
         self.radius = radius
+        self.x_vel = 0
+        self.y_vel = 0
+        self.orbit = []
         
     #method 01- Draw the bodies on the simulator 
     def draw_body(self, WINDOW):
@@ -42,7 +47,32 @@ class SolarSystemBodies :
         y = self.y*SolarSystemBodies.SCALE + HEIGHT//2
         pg.draw.circle(surface=WINDOW, color= self.color, center= (x,y), radius=self.radius)
            
-    
+    # Method 02- TO alculate the gravitational force between the planets 
+    def gravitational_force(self, ss_body):
+        # F=GMm/R^2
+        x_diff = ss_body.x - self.x
+        y_diff = ss_body.y - self.y
+        distance = math.sqrt(x_diff**2 + y_diff**2)
+        g_force= self.G * self.mass * ss_body.mass / distance**2
+        theta = math.atan2(y_diff/x_diff)
+        f_x = g_force * math.cos(theta)
+        f_y = g_force * math.sin(theta)
+        return f_x, f_y
+        
+    # Method 03 - to update the position of the planets
+    def update_position(self,ss_bodies):
+        net_fx , net_fy = 0,0
+        for ss_body in ss_bodies:
+            if self != ss_body:
+                f_x , f_y = self.gravitational_force(ss_body)
+                net_fx += f_x
+                net_fy += f_y
+        self.x_vel += net_fx / self.mass * self.TIME_STEP   
+        self.y_vel += net_fy / self.mass * self.TIME_STEP  
+        self.x += self.x_vel * self.TIME_STEP   
+        self.y += self.y_vel * self.TIME_STEP
+        self.orbit.append((self.x, self.y))        
+     
 
 # Star list with colour, center and radius information 
 stars_list = [
